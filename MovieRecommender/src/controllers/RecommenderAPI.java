@@ -26,6 +26,11 @@ public interface RecommenderAPI {
 	void addMovie(String title, String year, String url);
 	
 	/**
+	 * Adds a new movie with genres
+	 */
+	void addMovie(String title, String year, String url,List<String>genres);
+	
+	/**
 	 * The user will add a rating to the movie
 	 */
 	void addRating(int userID, int movieID, int rating);
@@ -80,9 +85,6 @@ public interface RecommenderAPI {
 	 */
 	Map<Integer, Item> getTopTenMovies();
 	
-	/**
-	 * Loads data from file
-	 */
 	
 	/**
 	 * Returns a boolean if the user exists, checks by userID
@@ -94,6 +96,10 @@ public interface RecommenderAPI {
 	 */
 	boolean itemExist(int itemID);
 	
+	/**
+	 * Loads data from file
+	 * @throws Exception
+	 */
 	void load() throws Exception;
 	
 	/**

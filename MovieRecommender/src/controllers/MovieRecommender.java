@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import models.Item;
@@ -47,7 +48,6 @@ public class MovieRecommender implements RecommenderAPI{
 		        		//Since the ratings are sorted in descending order of time
 		        		//HashMaps don't allow duplicate keys
 		        		users.get(ratings.get(i).getUserID()).addRating(items.get(ratings.get(i).getItemID()), ratings.get(i));
-		        		items.get(ratings.get(i).getItemID()).addRating(ratings.get(i));
 		        	}
 		        }
 			}
@@ -74,7 +74,14 @@ public class MovieRecommender implements RecommenderAPI{
 		users.remove(userID);
 	}
 
+	public void addMovie(String title, String year, String url, List<String> genres) {
+		Item newItem = new Item(itemIDToUse,title,year,url,genres);
+		items.put(new Integer(itemIDToUse), newItem);
+		itemIDToUse = items.keySet().size() + 1;
+	}
+	
 	public void addMovie(String title, String year, String url) {
+		
 		Item newItem = new Item(itemIDToUse,title,year,url);
 		items.put(new Integer(itemIDToUse), newItem);
 		itemIDToUse = items.keySet().size() + 1;
@@ -105,14 +112,19 @@ public class MovieRecommender implements RecommenderAPI{
 		return users.get(userID).getRatings();
 	}
 
+	
 	public HashSet<Item> getUserRecommendations(int userID) {
 		
+		//Makes a recommendations set of Items (Movies)
 		HashSet<Item> recommendations = new HashSet <Item>();
 		
+		//The current Users ratings on Items 
 		HashMap<Item,Rating> currentUserRatings = users.get(userID).getRatings();
 		User currentUser = users.get(userID);
 		
-		int[] similarity = new int[users.size()+1];//Doesn't use index at 0
+		//TreeMap of Similarity To User will be sorted in descending order
+		//Thus sim will contain all users that are similar to the currentUser by ratings in
+		//descending order
 		TreeMap<Integer,User> sim = new TreeMap<Integer,User>(new Comparator<Integer>(){
 
 			@Override
@@ -121,38 +133,41 @@ public class MovieRecommender implements RecommenderAPI{
 			}
 		});
 		
+		//Will loop through all users (excludes the currentUser)
 		for(User user : users.values())
 		{
 			if(!user.equals(currentUser))
 			{
+				int similarity = 0;
 				HashMap<Item,Rating> thisUser = user.getRatings();
 				for(Item currentUserItem : currentUserRatings.keySet())
 				{
 					if(thisUser.containsKey(currentUserItem))
 					{
-						similarity[user.getID()]+=(thisUser.get(currentUserItem).getRating() * currentUserRatings.get(currentUserItem).getRating());
+						//Dot product of the ratings of two users on the same item (movie)
+						similarity+=(thisUser.get(currentUserItem).getRating() * currentUserRatings.get(currentUserItem).getRating());
 					}
 				}
-				sim.put(similarity[user.getID()],user);
+				sim.put(similarity,user);
 			}
 		}
 		
-		for(User user : sim.values())
+		//Putting all the movies into the set 
+		//Note, there are movies that the users has already rated in there
+		//In the driver they will not be printed
+		Iterator<User> it = sim.values().iterator();
+		while(it.hasNext())
 		{
-			for(Item item : user.getRatings().keySet())
-			{
-				if(!(currentUser.getRatings().containsKey(item)))
-				{
-					recommendations.add(item);
-				}
-			}
+			User newUser = it.next();
+			//Adds the similar users top 10 movies
+			recommendations.addAll(userTopTenMovies(newUser.getID()));
 		}
+		
 		return recommendations;
 	}
 	
 	public List<Item> userTopTenMovies(int userID)
 	{
-		int forLoopLimit = 10;
 		List<Rating> ratings = new ArrayList<Rating>();
 		List<Item> result = new ArrayList<Item>();
 		for(Rating rating : users.get(userID).getRatings().values())
@@ -166,35 +181,47 @@ public class MovieRecommender implements RecommenderAPI{
 			{
 				return o2.getRating()-o1.getRating();
 			}
-		});
+		});	
 		
-		if(ratings.size() < 10)
-			forLoopLimit = ratings.size();		
-		
-		for(int i=0;i<forLoopLimit;i++)
+		for(Rating rating : ratings)
 		{
-			result.add(items.get(ratings.get(i).getItemID()));
-			//System.out.println(items.get(ratings.get(i)));
+			if(result.size() >= 10)
+				break;
+			result.add(items.get(rating.getItemID()));
 		}
-		
 		return result;
 	}
 
-	public Map<Integer,Item> getTopTenMovies() {
+	public Map<Integer,Item> getTopTenMovies() 
+	{
+		//Frequency of Item to the Item in descending order of frequency
+		TreeMap<Integer,Item> result = new TreeMap<Integer,Item>(new Comparator<Integer>()
+				{
+
+					@Override
+					public int compare(Integer o1, Integer o2) {
+						return o2.intValue()-o1.intValue();
+					}
+				});
+		//A list of all users' top ten movies
+		List<Item> allTopTens = new ArrayList<Item>();
 		
-		Map<Integer,Item> result = new TreeMap<Integer,Item>(new Comparator<Integer>() 
-	     {
-	        @Override
-	        public int compare(Integer o1, Integer o2) {                
-	            return o2.compareTo(o1);
-	         }
-	     });
-		
-		for(Item item : items.values())
+		//Adding all the top ten movies to the allTopTens
+		for(User user : users.values())
 		{
-			result.put(item.getAvgRating(),item);
+			allTopTens.addAll(userTopTenMovies(user.getID()));
 		}
 		
+		//Removing the duplicates
+		Set<Item> itemSet = new HashSet<Item>(allTopTens);
+		
+		//Adding the movies and the frequency of the duplicates
+		for(Item item : itemSet)
+		{
+			//Collections.frequency counts the frequency of the current item in the set
+			result.put(Collections.frequency(allTopTens, item),item);
+		}
+
 		return result;
 	}
 
@@ -239,7 +266,7 @@ public class MovieRecommender implements RecommenderAPI{
 		while(it.hasNext())
 		{
 			currentItem = items.get(it.next());
-			if (currentItem.getMovieTitle().equals(title) && currentItem.getReleaseDate().equals(year))
+			if (currentItem.getItemTitle().equals(title) && currentItem.getReleaseDate().equals(year))
 			{
 				return currentItem;
 			}
@@ -260,5 +287,4 @@ public class MovieRecommender implements RecommenderAPI{
 		}
 		return null;
 	}
-
 }

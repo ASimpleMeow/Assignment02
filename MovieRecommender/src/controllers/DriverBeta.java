@@ -1,7 +1,8 @@
 package controllers;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.io.File;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
@@ -18,9 +19,11 @@ import utils.XMLSerializer;
 public class DriverBeta {
 	
 	private RecommenderAPI movieRec;
+	private Scanner input;
 	
 	public DriverBeta()
 	{
+		input = new Scanner(System.in);
 		File  datastore = new File("datastore.xml");
 	    Serializer serializer = new XMLSerializer(datastore);
 		movieRec = new MovieRecommender(serializer,datastore.isFile());
@@ -40,11 +43,10 @@ public class DriverBeta {
 	public static void main(String[] args) throws Exception
 	{
 		DriverBeta main = new DriverBeta();
-
+		
 	    Shell shell = ShellFactory.createConsoleShell("@", "Welcome to pacemaker-console - ?help for instructions", main);
 	    shell.commandLoop();
-
-	    main.movieRec.write();
+	    //main.movieRec.write();
 	}
 	
 	@Command(description="Get all users details")
@@ -60,11 +62,23 @@ public class DriverBeta {
 			System.out.println(movieRec.getMovies().get(key));	
 	}
 	
+	@Command(description="Get a user by their first and last name")
+	public void getUser(@Param(name="first name")String firstName, @Param(name="last name")String lastName)
+	{
+		System.out.println(movieRec.getUser(firstName,lastName));
+	}
+	
+	@Command(description="Get a movie by its title and release year")
+	public void getMovie(@Param(name="title")String title, @Param(name="year")String year)
+	{
+		System.out.println(movieRec.getMovie(title,year));
+	}
+	
 	@Command(description="Add a new user")
 	public User addUser(@Param(name="first name")String firstName,@Param(name="last name")String lastName,
-			@Param(name="age")int age,@Param(name="gender")char gender,@Param(name="occupation")String occupation)
+			@Param(name="age")int age,@Param(name="gender")String gender,@Param(name="occupation")String occupation)
 	{
-		movieRec.addUser(firstName, lastName, age, gender, occupation);
+		movieRec.addUser(firstName, lastName, age, gender.toUpperCase().charAt(0), occupation);
 		System.out.println("\nThe User has been added\n");
 		return movieRec.getUser(firstName,lastName);
 	}
@@ -87,6 +101,27 @@ public class DriverBeta {
 			@Param(name="IMdB URL")String url)
 	{
 		movieRec.addMovie(title, year, url);
+		System.out.println("Movie Added!");
+		return movieRec.getMovie(title, year);
+	}
+	
+	@Command(description="Add a new movie with genres")
+	public Item addMovieWithGenres(@Param(name="movie title")String title,@Param(name="year of release")String year,
+			@Param(name="IMdB URL")String url)
+	{
+		List<String> genres = new ArrayList<String>();
+		System.out.println("Enter '0' when you're done adding genres");
+		String genre;
+		while(true)
+		{
+			System.out.print("Genre: ");
+			genre = input.next();
+			if(genre.equals("0"))
+				break;
+			genres.add(genre);
+		}
+		
+		movieRec.addMovie(title, year, url,genres);
 		System.out.println("Movie Added!");
 		return movieRec.getMovie(title, year);
 	}
@@ -117,10 +152,15 @@ public class DriverBeta {
 		System.out.println(movieRec.getMovie(itemID));
 	}
 	
+	@Command (description="Get user details")
+	public void getUser(@Param(name="user ID")int userID) {
+		System.out.println(movieRec.getUser(userID));
+	}
+	
 	@Command (description="Get users ratings details")
 	public void getUsersRating(@Param(name="user ID")int userID) {
 		for(Item item : movieRec.getUserRating(userID).keySet())
-			System.out.println("Movie : "+item.getMovieTitle()+ " - "+ movieRec.getUserRating(userID).get(item));
+			System.out.println("Movie : "+item.getItemTitle()+ "\n"+ movieRec.getUserRating(userID).get(item));
 	}
 	
 	@Command (description="Gets user recommendations within the given limit")
@@ -128,9 +168,19 @@ public class DriverBeta {
 		Iterator<Item> it = movieRec.getUserRecommendations(userID).iterator();
 		while(it.hasNext() && limit>0)
 		{
-			System.out.println(it.next());
-			limit--;
+			Item item = it.next();
+			if( !(movieRec.getUser(userID).getRatings().containsKey(item)) )
+			{
+				System.out.println(item);
+				limit--;
+			}
 		}
+	}
+	
+	@Command (description="Gets top ten movies of a user")
+	public void getUserTopTen(@Param(name="user ID")int userID) {
+		for(Item item : movieRec.userTopTenMovies(userID))
+			System.out.println(item);
 	}
 	
 	@Command (description="Gets top ten movies by their average ratings")
@@ -138,8 +188,8 @@ public class DriverBeta {
 		int limit = 10;
 		for(Map.Entry<Integer, Item> mapData : movieRec.getTopTenMovies().entrySet()) 
 		{
-	        System.out.println("Rating : " +mapData.getKey()+" Movie : "+mapData.getValue());
-	        limit--;
+	        System.out.println("Frequency : " +mapData.getKey()+" Movie : "+mapData.getValue());
+			limit--;
 	        if(limit == 0)
 	        	break;
 	    }

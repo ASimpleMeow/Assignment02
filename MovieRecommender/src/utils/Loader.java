@@ -15,8 +15,8 @@ import models.User;
 public class Loader {
 	
 	private Map<Integer,String> genres;
-	private static int userID = 1;
-	private static int itemID = 1;
+	private int userID = 1;
+	private int itemID = 1;
 	
 	public Loader()
 	{

@@ -67,7 +67,7 @@ public class Rating implements Comparable<Rating>, Serializable{
 
 	@Override
 	public String toString() {
-		return "Rating [userID=" + userID + ", itemID=" + itemID + ", rating=" + rating + "]";
+		return "Rating\nUser ID: " + userID + "\nMovie ID: " + itemID + "\nRating:" + rating + "\n";
 	}
 	
 	@Override  

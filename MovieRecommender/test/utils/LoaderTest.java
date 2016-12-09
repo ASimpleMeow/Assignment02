@@ -47,10 +47,10 @@ public class LoaderTest {
 		Map<Integer,Item> items = load.loadItems("data_movieLens/items.dat");
 		//There are 3 invalid items in the items.dat file
 		assertEquals(1679,items.size(),0.01);
-		assertEquals("Toy Story (1995)",items.get(1).getMovieTitle());
-		assertEquals(1,items.get(1).getMovieID());
-		assertEquals(1679,items.get(1679).getMovieID());
-		assertEquals("Scream of Stone (Schrei aus Stein) (1991)",items.get(1679).getMovieTitle());
+		assertEquals("Toy Story (1995)",items.get(1).getItemTitle());
+		assertEquals(1,items.get(1).getItemID());
+		assertEquals(1679,items.get(1679).getItemID());
+		assertEquals("Scream of Stone (Schrei aus Stein) (1991)",items.get(1679).getItemTitle());
 		
 		assertNotEquals(items.get(1),items.get(2));
 		assertNotEquals(items.get(1),items.get(1679));

@@ -183,7 +183,7 @@ public class DriverAlpha {
 		System.out.print("User ID : ");
 		int userID = input.nextInt();
 		for(Item item : movieRec.getUserRating(userID).keySet())
-			System.out.println("Movie : "+item.getMovieTitle()+ " - "+ movieRec.getUserRating(userID).get(item));
+			System.out.println("Movie : "+item.getItemTitle()+ " - "+ movieRec.getUserRating(userID).get(item));
 		
 	}
 
@@ -226,7 +226,7 @@ public class DriverAlpha {
 			else
 				return false;
 			//System.out.print("Your Movie's ID : ");
-			movieID = movie.getMovieID();//input.nextInt();
+			movieID = movie.getItemID();//input.nextInt();
 		}
 		
 		System.out.print("Your Rating : ");
