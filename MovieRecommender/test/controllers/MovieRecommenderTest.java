@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
@@ -147,19 +149,58 @@ public class MovieRecommenderTest {
 	@Test
 	public void testGetUserRecommendations()
 	{
-		
+		Random rn = new Random();
+		movieRec.addUser("Test", "Test", 19, 'M', "None");
+		List<Item> itemsRated = new ArrayList<Item>();
+		for(int i=1;i<rn.nextInt(movieRec.getMovies().size()/2)+1;i++)
+		{
+			movieRec.addRating(944, i, -5+(rn.nextInt(10)));
+			itemsRated.add(movieRec.getMovie(i));
+		}
+		for(Item item : movieRec.getUserRecommendations(944))
+		{
+			if(itemsRated.contains(item))
+				fail("Movie has already been rated by User");
+		}
 	}
 	
 	@Test
 	public void testUserTopTenMovies()
 	{
-		
+		movieRec.addUser("Test", "Test", 19, 'M', "None");
+		for(int i=1; i<movieRec.getMovies().size();i++)
+		{
+			if(i==5||i==15||i==25||i==35||i==45||i==55||i==65||i==85||i==95||i==100)
+				movieRec.addRating(944, i, 5);
+			else
+				movieRec.addRating(944, i, new Random().nextInt(3));
+		}
+		assertEquals(10,movieRec.userTopTenMovies(944).size());
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(5)));
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(15)));
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(25)));
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(35)));
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(45)));
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(55)));
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(65)));
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(85)));
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(95)));
+		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(100)));
 	}
 	
 	@Test
 	public void testGetTopTenMovies()
 	{
-		
+		assertEquals(10,movieRec.getTopTenMovies().size());
+		for(Item item : movieRec.getTopTenMovies().values())
+		{
+			int numberInUsersTop = 0;
+			for(User user : movieRec.getUsers().values())
+				if(user.getRatings().containsKey(item))
+					numberInUsersTop++;
+			if(numberInUsersTop < 3)
+				fail("Less Than 3 Users Have This Movie In Their Top Ten - "+numberInUsersTop);
+		}
 	}
 	
 	@Test

@@ -168,12 +168,8 @@ public class DriverBeta {
 		Iterator<Item> it = movieRec.getUserRecommendations(userID).iterator();
 		while(it.hasNext() && limit>0)
 		{
-			Item item = it.next();
-			if( !(movieRec.getUser(userID).getRatings().containsKey(item)) )
-			{
-				System.out.println(item);
-				limit--;
-			}
+			System.out.println(it.next());
+			limit--;
 		}
 	}
 	
@@ -185,13 +181,9 @@ public class DriverBeta {
 	
 	@Command (description="Gets top ten movies by their average ratings")
 	public void getTopTen() {
-		int limit = 10;
 		for(Map.Entry<Integer, Item> mapData : movieRec.getTopTenMovies().entrySet()) 
 		{
 	        System.out.println("Frequency : " +mapData.getKey()+" Movie : "+mapData.getValue());
-			limit--;
-	        if(limit == 0)
-	        	break;
 	    }
 	}
 }

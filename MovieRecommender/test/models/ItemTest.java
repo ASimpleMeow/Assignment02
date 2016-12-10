@@ -107,7 +107,7 @@ public class ItemTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals("Item [movieID=1, movieTitle=Movie, releaseDate=2016, url=www.none.com, genres=]",testItem.toString());
+		assertEquals("movieID: 1\nMovie Title: Movie\nRelease Date: 2016\nURL: www.none.com\nGenres: \n",testItem.toString());
 	}
 
 }

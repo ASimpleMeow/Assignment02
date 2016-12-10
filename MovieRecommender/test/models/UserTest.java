@@ -93,7 +93,7 @@ public class UserTest {
 	@Test
 	public void testToString()
 	{
-		assertEquals("User [id=0, firstName=Oleksandr, lastName=Kononov, age=19, gender=M, occupation=PROGRAMMER]",testUser.toString());
+		assertEquals("User id: 0\nFirst Name: Oleksandr\nLast Name: Kononov\nAge: 19\nGender: M\nOccupation: PROGRAMMER\n",testUser.toString());
 	}
 
 }

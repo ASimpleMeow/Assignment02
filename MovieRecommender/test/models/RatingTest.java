@@ -78,7 +78,7 @@ public class RatingTest {
 	public void testToString()
 	{
 		Rating rating = new Rating(1,2,3);
-		assertEquals("Rating [userID=1, itemID=2, rating=3]",rating.toString());
+		assertEquals("Rating\nUser ID: 1\nMovie ID: 2\nRating:3\n",rating.toString());
 	}
 	
 }

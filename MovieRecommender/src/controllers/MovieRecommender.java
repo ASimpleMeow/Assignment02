@@ -152,15 +152,18 @@ public class MovieRecommender implements RecommenderAPI{
 			}
 		}
 		
-		//Putting all the movies into the set 
-		//Note, there are movies that the users has already rated in there
-		//In the driver they will not be printed
+		//Putting all the movies which the user hasn't already rated into 
+		//the set
 		Iterator<User> it = sim.values().iterator();
 		while(it.hasNext())
 		{
 			User newUser = it.next();
 			//Adds the similar users top 10 movies
-			recommendations.addAll(userTopTenMovies(newUser.getID()));
+			for(Item item : userTopTenMovies(newUser.getID()))
+			{
+				if(!currentUserRatings.containsKey(item))
+					recommendations.add(item);
+			}
 		}
 		
 		return recommendations;
@@ -221,8 +224,16 @@ public class MovieRecommender implements RecommenderAPI{
 			//Collections.frequency counts the frequency of the current item in the set
 			result.put(Collections.frequency(allTopTens, item),item);
 		}
-
-		return result;
+		//Getting the SubMap
+		int index = 0;
+		int toKey = 0;
+		for(Integer i : result.keySet())
+		{
+			if(index == 10)
+				toKey = i;
+			index++;
+		}
+		return result.subMap(result.firstKey(), toKey);
 	}
 
 	@SuppressWarnings("unchecked")
