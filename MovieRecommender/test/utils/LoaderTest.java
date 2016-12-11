@@ -13,22 +13,38 @@ import models.Item;
 import models.Rating;
 import models.User;
 
+/**
+ * JUNIT Test for Loader class
+ * @author Oleksandr Kononov
+ *
+ */
+
 public class LoaderTest {
 
 	private Loader load;
 	
+	/**
+	 * Runs before every test
+	 */
 	@Before
 	public void setup()
 	{
 		load = new Loader();
 	}
 	
+	/**
+	 * Runs after every test
+	 */
 	@After
 	public void tearDown()
 	{
 		load = null;
 	}
 	
+	/**
+	 * Testing loading in the users
+	 * @throws Exception
+	 */
 	@Test
 	public void testLoadUsers() throws Exception {
 		Map<Integer,User> users = load.loadUsers("data_movieLens/users.dat");
@@ -42,6 +58,10 @@ public class LoaderTest {
 		assertNotEquals(users.get(1),users.get(943));
 	}
 	
+	/**
+	 * Testing loading in the items
+	 * @throws Exception
+	 */
 	@Test
 	public void testLoadItems() throws Exception {
 		Map<Integer,Item> items = load.loadItems("data_movieLens/items.dat");
@@ -64,6 +84,10 @@ public class LoaderTest {
 		assertEquals("Drama",items.get(1679).getGenres().get(0));
 	}
 
+	/**
+	 * Testing loading in the ratings
+	 * @throws Exception
+	 */
 	@Test
 	public void testLoadRatings() throws Exception
 	{

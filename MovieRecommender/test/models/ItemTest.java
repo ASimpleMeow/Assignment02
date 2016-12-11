@@ -9,22 +9,34 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
 
+/**
+ * JUNIT Test for Item class
+ * @author Oleksandr Kononov
+ *
+ */
 public class ItemTest {
 
 	Item testItem;
 	
+	/**
+	 * Runs before every test
+	 */
 	@Before
 	public void setup()
 	{
 		testItem = new Item(1,"Movie","2016","www.none.com",new ArrayList<String>());
 	}
 	
+	/**
+	 * Runs after every test
+	 */
 	@After
 	public void tearDown()
 	{
 		testItem = null;
 	}
 	
+	//Testing exception handling
 	@Test (expected = IllegalArgumentException.class)
 	public void testContructorFailID() {
 		new Item(-1,"Movie","2016","www.none.com",new ArrayList<String>());
@@ -67,6 +79,9 @@ public class ItemTest {
 		fail();
 	}
 	
+	/**
+	 * Constructor testing
+	 */
 	@Test
 	public void testContructor()
 	{
@@ -94,6 +109,9 @@ public class ItemTest {
 		assertSame(item5,item1);
 	}
 	
+	/**
+	 * Getters testing
+	 */
 	@Test
 	public void testGetters()
 	{
@@ -104,6 +122,9 @@ public class ItemTest {
 		assertEquals(0,testItem.getGenres().size());
 	}
 	
+	/**
+	 * ToString testing
+	 */
 	@Test
 	public void testToString()
 	{

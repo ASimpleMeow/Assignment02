@@ -6,15 +6,30 @@ import java.util.List;
 
 import com.google.common.base.Objects;
 
+/**
+ * Wrapper class for item object
+ * 
+ * @author Oleksandr Kononov
+ *
+ */
+
 public class Item implements Serializable{
 	
-	private static final long serialVersionUID = 554341648233884974L;
+	private static final long serialVersionUID = 554341648233884974L; //Used for Serializer
 	private int itemID;
 	private String itemTitle;
 	private String releaseDate;
 	private String url;
 	private List<String> genres;
 	
+	/**
+	 * Constructor for the Item class which includes genres
+	 * @param itemID
+	 * @param itemTitle
+	 * @param releaseDate
+	 * @param url
+	 * @param genres
+	 */
 	public Item(int itemID, String itemTitle, String releaseDate, String url, List<String> genres)
 	{
 		this.genres = new ArrayList<String>();
@@ -26,6 +41,13 @@ public class Item implements Serializable{
 		this.genres = genres;
 	}
 	
+	/**
+	 * Constructor of the Item class which excludes genres
+	 * @param itemID
+	 * @param itemTitle
+	 * @param releaseDate
+	 * @param url
+	 */
 	public Item(int itemID, String itemTitle, String releaseDate, String url)
 	{
 		this.genres = new ArrayList<String>();
@@ -35,6 +57,7 @@ public class Item implements Serializable{
 		setUrl(url);
 	}
 	
+	//SETTERS//
 	private void setItemID(int movieID)
 	{
 		if(movieID < 0)
@@ -72,6 +95,7 @@ public class Item implements Serializable{
 		this.url = url;
 	}
 
+	//GETTERS//
 	public int getItemID() {
 		return itemID;
 	}
@@ -92,6 +116,10 @@ public class Item implements Serializable{
 		return genres;
 	}
 
+	/**
+	 * ToString method which returns a formated string containing data about the class
+	 * @return string
+	 */
 	@Override
 	public String toString() {
 		String allGenres = "";
@@ -101,12 +129,18 @@ public class Item implements Serializable{
 				+ "\nURL: " + url + "\nGenres: " + allGenres + "\n";
 	}
 	
+	/**
+	 * hash code generation for this class, used on HashMaps
+	 */
 	@Override  
 	  public int hashCode()  
 	  {  
 	     return Objects.hashCode(this.itemTitle, this.releaseDate, this.url,this.genres);  
 	  }  
 	  
+	/**
+	 * equals method for this class to compare to other item objects 
+	 */
 	  @Override
 	  public boolean equals(final Object obj)
 	  {

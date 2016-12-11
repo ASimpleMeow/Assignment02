@@ -1,5 +1,12 @@
 package models;
 
+/**
+ * Enumeration class for user occupation
+ * 
+ * @author Oleksandr Kononov
+ *
+ */
+
 public enum Occupation
 {
 	ADMINISTRATOR,

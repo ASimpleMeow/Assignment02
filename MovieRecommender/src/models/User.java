@@ -5,9 +5,15 @@ import java.util.HashMap;
 
 import com.google.common.base.Objects;
 
+/**
+ * Wrapper class for user object
+ * 
+ * @author Oleksandr Kononov
+ *
+ */
 public class User implements Serializable{
 	
-	private static final long serialVersionUID = 2191424049952121573L;
+	private static final long serialVersionUID = 2191424049952121573L;//Used for Serailizer
 	private int id;
 	private String firstName;
 	private String lastName;
@@ -16,6 +22,15 @@ public class User implements Serializable{
 	private Occupation occupation;
 	private HashMap<Item,Rating> ratings;
 	
+	/**
+	 * Constructor for the User class
+	 * @param id
+	 * @param firstName
+	 * @param lastName
+	 * @param age
+	 * @param gender
+	 * @param occupation
+	 */
 	public User(int id,String firstName, String lastName, int age, char gender, String occupation)
 	{
 		setUserID(id);
@@ -27,10 +42,16 @@ public class User implements Serializable{
 		ratings = new HashMap<Item,Rating>();
 	}
 	
+	/**
+	 * Adds a rating to the user
+	 * @param item
+	 * @param rating
+	 */
 	public void addRating(Item item,Rating rating) {
 		ratings.put(item, rating);
 	}
 	
+	//GETTERS//
 	public HashMap<Item,Rating> getRatings()
 	{
 		return ratings;
@@ -61,18 +82,28 @@ public class User implements Serializable{
 	}
 
 
+	/**
+	 * ToString method which returns a formated string containing data about the class
+	 * @return string
+	 */
 	@Override
 	public String toString() {
 		return "User id: " + id + "\nFirst Name: "+firstName+"\nLast Name: "+lastName+"\nAge: " + age+"\nGender: " + gender + 
 				"\nOccupation: " + occupation+"\n";
 	}
 	
+	/**
+	 * hash code generation for this class, used on HashMaps
+	 */
 	@Override  
 	  public int hashCode()  
 	  {  
 	     return Objects.hashCode(this.lastName, this.firstName, this.age, this.gender,this.occupation);  
 	  }  
 	  
+	/**
+	 * equals method for this class to compare to other item objects 
+	 */
 	  @Override
 	  public boolean equals(final Object obj)
 	  {
@@ -91,6 +122,7 @@ public class User implements Serializable{
 	    }
 	  }
 	  
+	  //SETTERS//
 	  private void setUserID(int id)
 		{
 			if(id < 0)

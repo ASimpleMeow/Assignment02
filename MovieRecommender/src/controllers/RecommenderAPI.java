@@ -8,12 +8,19 @@ import models.Item;
 import models.Rating;
 import models.User;
 
+/**
+ * Recommender Interface
+ * 
+ * @author Oleksandr Kononov
+ *
+ */
 public interface RecommenderAPI {
 	
 	/**
 	 * Adds a new user 
+	 * @throws Exception 
 	 */
-	void addUser(String firstName, String lastName, int age, char gender, String occupation);
+	void addUser(String firstName, String lastName, int age, char gender, String occupation) throws Exception;
 	
 	/**
 	 * Removes an existing
@@ -22,18 +29,21 @@ public interface RecommenderAPI {
 	
 	/**
 	 * Adds a new movie
+	 * @throws Exception 
 	 */
-	void addMovie(String title, String year, String url);
+	void addMovie(String title, String year, String url) throws Exception;
 	
 	/**
 	 * Adds a new movie with genres
+	 * @throws Exception 
 	 */
-	void addMovie(String title, String year, String url,List<String>genres);
+	void addMovie(String title, String year, String url,List<String>genres) throws Exception;
 	
 	/**
 	 * The user will add a rating to the movie
+	 * @throws Exception 
 	 */
-	void addRating(int userID, int movieID, int rating);
+	void addRating(int userID, int movieID, int rating) throws Exception;
 	
 	/**
 	 * Gets a specific movie by id

@@ -4,14 +4,28 @@ import java.io.Serializable;
 
 import com.google.common.base.Objects;
 
+/**
+ * Wrapper class for rating object
+ * 
+ * @author Oleksandr Kononov
+ *
+ */
 public class Rating implements Comparable<Rating>, Serializable{
 	
-	private static final long serialVersionUID = -6796550095611787611L;
+	private static final long serialVersionUID = -6796550095611787611L;//Used for Serailizer
 	private int userID;
 	private int itemID;
 	private int rating;
 	private double timestamp;
 	
+	/**
+	 * Constructor for the Rating class that includes timestamp
+	 * used only for first time loading to remove duplicate ratings
+	 * @param userID
+	 * @param itemID
+	 * @param rating
+	 * @param timestamp
+	 */
 	public Rating(int userID, int itemID, int rating,double timestamp)
 	{
 		setUserID(userID);
@@ -20,6 +34,12 @@ public class Rating implements Comparable<Rating>, Serializable{
 		this.timestamp = timestamp;
 	}
 	
+	/**
+	 * Standard constructor for the Rating class
+	 * @param userID
+	 * @param itemID
+	 * @param rating
+	 */
 	public Rating(int userID, int itemID, int rating)
 	{
 		setUserID(userID);
@@ -27,11 +47,7 @@ public class Rating implements Comparable<Rating>, Serializable{
 		setRating(rating);
 	}
 	
-	public double getTimestamp()
-	{
-		return timestamp;
-	}
-	
+	//SETTERS//
 	private void setUserID(int userID)
 	{
 		if(userID < 0)
@@ -53,6 +69,12 @@ public class Rating implements Comparable<Rating>, Serializable{
 		this.rating = rating;
 	}
 
+	//GETTERS//
+	public double getTimestamp()
+	{
+		return timestamp;
+	}
+	
 	public int getUserID() {
 		return userID;
 	}
@@ -65,17 +87,27 @@ public class Rating implements Comparable<Rating>, Serializable{
 		return rating;
 	}
 
+	/**
+	 * ToString method which returns a formated string containing data about the class
+	 * @return string
+	 */
 	@Override
 	public String toString() {
 		return "Rating\nUser ID: " + userID + "\nMovie ID: " + itemID + "\nRating:" + rating + "\n";
 	}
 	
+	/**
+	 * hash code generation for this class, used on HashMaps
+	 */
 	@Override  
 	  public int hashCode()  
 	  {  
 	     return Objects.hashCode(this.itemID, this.rating);  
 	  }  
 	  
+	/**
+	 * equals method for this class to compare to other item objects 
+	 */
 	  @Override
 	  public boolean equals(final Object obj)
 	  {
@@ -92,6 +124,9 @@ public class Rating implements Comparable<Rating>, Serializable{
 	  }
 
 
+	 /**
+	  * Comparable method to compare one rating to another
+	  */
 	@Override
 	public int compareTo(Rating o) {
 		return (int) (o.timestamp - o.getTimestamp());

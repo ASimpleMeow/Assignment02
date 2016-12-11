@@ -13,16 +13,28 @@ import org.junit.Test;
 import models.Item;
 import models.User;
 
+/**
+ * JUNIT Test for XMLSerializer class
+ * @author Oleksandr Kononov
+ *
+ */
+
 public class XMLSerializerTest {
 	
 	Serializer s;
 	
+	/**
+	 * Runs before every test
+	 */
 	@Before
 	public void setup()
 	{
 		s = new XMLSerializer(new File("test.xml"));
 	}
 	
+	/**
+	 * Runs after every test
+	 */
 	@After
 	public void tearDown()
 	{
@@ -32,6 +44,10 @@ public class XMLSerializerTest {
 			testFile.delete();
 	}
 	
+	/**
+	 * Testing serailizing
+	 * @throws Exception
+	 */
 	@Test
 	public void testXMLSerializer() throws Exception {
 		String testString = "Test";

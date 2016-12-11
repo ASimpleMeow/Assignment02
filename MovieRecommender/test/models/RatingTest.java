@@ -6,22 +6,35 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * JUNIT Test for Rating class
+ * @author Oleksandr Kononov
+ *
+ */
+
 public class RatingTest {
 	
 	Rating rating;
 	
+	/**
+	 * Runs before every test
+	 */
 	@Before
 	public void setup()
 	{
 		rating = new Rating(1,2,3);
 	}
 	
+	/**
+	 * Runs after every test
+	 */
 	@After
 	public void tearDown()
 	{
 		rating = null;
 	}
 	
+	//Testing exception handling
 	@Test (expected=IllegalArgumentException.class)
 	public void testContructorUserIDFail()
 	{
@@ -50,6 +63,9 @@ public class RatingTest {
 		fail();
 	}
 	
+	/**
+	 * Constructor testing
+	 */
 	@SuppressWarnings("unused")
 	@Test 
 	public void testContructor()
@@ -65,6 +81,9 @@ public class RatingTest {
 		assertSame(rating6,rating2);
 	}
 	
+	/**
+	 * Getters testing
+	 */
 	@Test
 	public void testGetters()
 	{
@@ -74,6 +93,9 @@ public class RatingTest {
 		assertEquals(3,rating.getRating(),0.01);
 	}
 	
+	/**
+	 * ToString testing
+	 */
 	@Test
 	public void testToString()
 	{

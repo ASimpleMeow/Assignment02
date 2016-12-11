@@ -12,6 +12,12 @@ import java.util.Stack;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * Serailizes data to an XML file
+ * 
+ * @author Oleksandr Kononov
+ *
+ */
 public class XMLSerializer implements Serializer
 {
 
@@ -19,22 +25,35 @@ public class XMLSerializer implements Serializer
 private Stack stack = new Stack();
   private File file;
 
+  /**
+   * Constructor for the class
+   * @param file
+   */
   public XMLSerializer(File file)
   {
     this.file = file;
   }
 
+  /**
+   * Pushs an object onto the stack
+   */
   @SuppressWarnings("unchecked")
-public void push(Object o)
+  public void push(Object o)
   {
     stack.push(o);
   }
 
+  /**
+   * Pops an object off the stack and returns it
+   */
   public Object pop()
   {
     return stack.pop(); 
   }
 
+  /**
+   * Reads in a stack from an XML file which is decompressed by GZIP stream
+   */
   @SuppressWarnings({ "rawtypes" })
   public void read() throws Exception
   {
@@ -54,6 +73,9 @@ public void push(Object o)
     }
   }
 
+  /**
+   * Write the stack to an XML file and compresses it with GZIP stream
+   */
   public void write() throws Exception
   {
     ObjectOutputStream os = null;

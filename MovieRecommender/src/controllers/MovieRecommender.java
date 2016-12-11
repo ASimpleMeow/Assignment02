@@ -17,16 +17,27 @@ import models.User;
 import utils.Loader;
 import utils.Serializer;
 
+/**
+ * The MovieRecommender class contains all implementations of the 
+ * RecommenderAPI
+ * @author Oleksandr Kononov
+ *
+ */
 public class MovieRecommender implements RecommenderAPI{
 
-	private Map<Integer,User> users;
-	private List<Rating> ratings;
-	private Map<Integer,Item> items;
-	private int userIDToUse;
-	private int itemIDToUse;
-	private Serializer serializer;
-	private Loader load;
+	private Map<Integer,User> users; //UserID to User map
+	private List<Rating> ratings; //List ratings
+	private Map<Integer,Item> items; //ItemID to Item map
+	private int userIDToUse; //The next ID to use when adding a new user
+	private int itemIDToUse; //The next ID to use when adding a new item
+	private Serializer serializer;//Serializer
+	private Loader load;//Loader to load in data from cvs
 	
+	/**
+	 * Contructor for the class handles initiallization and data loading
+	 * @param serializer
+	 * @param hasSave
+	 */
 	public MovieRecommender(Serializer serializer,boolean hasSave)
 	{
 		this.serializer = serializer;
@@ -63,31 +74,68 @@ public class MovieRecommender implements RecommenderAPI{
 		}
 	}
 	
-	public void addUser(String firstName, String lastName, int age, char gender, String occupation) {
+	/**
+	 * Adds a new user
+	 * @param firstName
+	 * @param lastName
+	 * @param age
+	 * @param gender
+	 * @param occupation
+	 * @throws Exception
+	 */
+	public void addUser(String firstName, String lastName, int age, char gender, String occupation) throws Exception{
 		User newUser = new User(userIDToUse,firstName,lastName, age, gender,occupation);
 		users.put(new Integer(userIDToUse), newUser);
 		userIDToUse = users.keySet().size() + 1;
 	}
 
+	/**
+	 * Removes an existing user by ID
+	 * @param userID
+	 */
 	public void removeUser(int userID) {
 		userIDToUse = userID;
 		users.remove(userID);
 	}
 
-	public void addMovie(String title, String year, String url, List<String> genres) {
+	/**
+	 * Adds a new Item (movie) with genres
+	 * @param title
+	 * @param year
+	 * @param url
+	 * @param genres
+	 * @throws Exception
+	 */
+	public void addMovie(String title, String year, String url, List<String> genres) throws Exception 
+	{
 		Item newItem = new Item(itemIDToUse,title,year,url,genres);
 		items.put(new Integer(itemIDToUse), newItem);
 		itemIDToUse = items.keySet().size() + 1;
 	}
 	
-	public void addMovie(String title, String year, String url) {
+	/**
+	 * Adds a new Item (movie) without genres
+	 * @param title
+	 * @param year
+	 * @param url
+	 * @throws Exception
+	 */
+	public void addMovie(String title, String year, String url) throws Exception  
+	{
 		
 		Item newItem = new Item(itemIDToUse,title,year,url);
 		items.put(new Integer(itemIDToUse), newItem);
 		itemIDToUse = items.keySet().size() + 1;
 	}
 
-	public void addRating(int userID, int movieID, int rating) {
+	/**
+	 * Adds a new rating
+	 * @param userID
+	 * @param movieID
+	 * @param rating
+	 * @throws Exception
+	 */
+	public void addRating(int userID, int movieID, int rating) throws Exception{
 		Rating newRating = new Rating(userID,movieID,rating);
 		if( !(users.get(userID).getRatings().containsKey(items.get(movieID))) )
 		{
@@ -99,20 +147,39 @@ public class MovieRecommender implements RecommenderAPI{
 		}
 	}
 
+	/**
+	 * Gets an Item by ID
+	 * @param movieID
+	 * @return Item
+	 */
 	public Item getMovie(int movieID) {
 		return items.get(movieID);
 	}
 	
+	/**
+	 * Gets a User by ID
+	 * @param userID
+	 * @return user
+	 */
 	public User getUser(int userID)
 	{
 		return users.get(userID);
 	}
 
+	/**
+	 * Returns users ratings
+	 * @param userID
+	 * @return item to rating map
+	 */
 	public Map<Item,Rating> getUserRating(int userID) {
 		return users.get(userID).getRatings();
 	}
 
-	
+	/**
+	 * Returns users recommendations
+	 * @param userID
+	 * @return set of items
+	 */
 	public HashSet<Item> getUserRecommendations(int userID) {
 		
 		//Makes a recommendations set of Items (Movies)
@@ -169,6 +236,11 @@ public class MovieRecommender implements RecommenderAPI{
 		return recommendations;
 	}
 	
+	/**
+	 * Returns a user specific top ten items (movies)
+	 * @param userID
+	 * @return list of items
+	 */
 	public List<Item> userTopTenMovies(int userID)
 	{
 		List<Rating> ratings = new ArrayList<Rating>();
@@ -195,6 +267,10 @@ public class MovieRecommender implements RecommenderAPI{
 		return result;
 	}
 
+	/**
+	 * Returns top ten movies
+	 * @return frequency of item occurrence in user specific top tens to item map
+	 */
 	public Map<Integer,Item> getTopTenMovies() 
 	{
 		//Frequency of Item to the Item in descending order of frequency
@@ -236,41 +312,71 @@ public class MovieRecommender implements RecommenderAPI{
 		return result.subMap(result.firstKey(), toKey);
 	}
 
+	/**
+	 * Loads data from xml file
+	 * @throws Exception
+	 */
 	@SuppressWarnings("unchecked")
 	public void load() throws Exception {
 		
 		serializer.read();
 	    users = (Map<Integer, User>) serializer.pop();
 	    items = (Map<Integer, Item>) serializer.pop();
-	   // ratings = (List<Rating>) serializer.pop();
 	}
 
+	/**
+	 * Writes data to xml file
+	 * @throws Exception
+	 */
 	public void write() throws Exception{
 		
-		//serializer.push(ratings);
 		serializer.push(items);
 	    serializer.push(users);
 	    serializer.write(); 
 	}
 
+	/**
+	 * Returns all users
+	 * @return userID to user map
+	 */
 	public Map<Integer, User> getUsers() {
 		return users;
 	}
 
+	/**
+	 * Return all items
+	 * @return itemID to item map
+	 */
 	public Map<Integer, Item> getMovies() {
 		return items;
 	}
 
+	/**
+	 * Checks if the user exists
+	 * @param userID
+	 * @return boolean
+	 */
 	public boolean userExist(int userID) {
 
 		return users.containsKey(userID);
 	}
 
+	/**
+	 * Checks if the item exists
+	 * @param itemID
+	 * @return boolean
+	 */
 	public boolean itemExist(int itemID) {
 
 		return items.containsKey(itemID);
 	}
 
+	/**
+	 * Gets item by title and year
+	 * @param title
+	 * @param year
+	 * @return item
+	 */
 	public Item getMovie(String title, String year) {
 		Iterator<Integer> it = items.keySet().iterator();
 		Item currentItem;
@@ -285,6 +391,12 @@ public class MovieRecommender implements RecommenderAPI{
 		return null;
 	}
 
+	/**
+	 * Gets user by first and last name
+	 * @param firstName
+	 * @param lastName
+	 * @return user
+	 */
 	public User getUser(String firstName, String lastName) {
 		Iterator<Integer> it = users.keySet().iterator();
 		User currentUser;

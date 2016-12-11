@@ -6,22 +6,35 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
 
+/**
+ * JUNIT Test for User class
+ * @author Oleksandr Kononov
+ *
+ */
+
 public class UserTest {
 
 	User testUser;
 	
+	/**
+	 * Runs before every test
+	 */
 	@Before
 	public void setup()
 	{
 		testUser = new User(0,"Oleksandr","Kononov",19,'M',"Programmer");
 	}
 	
+	/**
+	 * Runs after every test
+	 */
 	@After
 	public void tearDown()
 	{
 		testUser = null;
 	}
 	
+	//Testing exception handling
 	@Test (expected = IllegalArgumentException.class)
 	public void testContructorFailID() {
 		new User(-1,"Test1","Test2",19,'M',"Programmer");
@@ -63,6 +76,9 @@ public class UserTest {
 		new User(1,"Test1","Test2",19,'m',"Programmer");
 	}
 	
+	/**
+	 * Constructor testing
+	 */
 	@Test
 	public void testContructor()
 	{
@@ -79,6 +95,9 @@ public class UserTest {
 		assertSame(user5,user1);
 	}
 	
+	/**
+	 * Getters testing
+	 */
 	@Test
 	public void testGetters()
 	{
@@ -90,6 +109,9 @@ public class UserTest {
 		assertEquals(Occupation.PROGRAMMER,testUser.getOccupation());
 	}
 	
+	/**
+	 * ToString testing
+	 */
 	@Test
 	public void testToString()
 	{

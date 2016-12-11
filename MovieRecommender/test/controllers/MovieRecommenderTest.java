@@ -16,22 +16,34 @@ import models.User;
 import utils.Serializer;
 import utils.XMLSerializer;
 
+/**
+ * JUNIT test for MovieRecommender class
+ * @author Oleksandr Kononov
+ *
+ */
 public class MovieRecommenderTest {
 
 	RecommenderAPI movieRec;
 	
+	/**
+	 * Runs before every test
+	 */
 	@Before
 	public void setup()
 	{
 		movieRec =  new MovieRecommender(null,false);
 	}
 	
+	/**
+	 * Runs after every test
+	 */
 	@After
 	public void tearDown()
 	{
 		movieRec = null;
 	}
 	
+	//Testing getters//
 	@Test
 	public void testGetUsers() {
 		assertEquals(943,movieRec.getUsers().size());
@@ -60,6 +72,9 @@ public class MovieRecommenderTest {
 		assertEquals(testItem,movieRec.getMovie(49));
 	}
 	
+	/**
+	 * Testing for user and item existence
+	 */
 	@Test
 	public void testExists()
 	{
@@ -73,8 +88,12 @@ public class MovieRecommenderTest {
 		assertEquals(true,movieRec.getMovies().containsValue(testItem));
 	}
 	
+	/**
+	 * Testing adding a user
+	 * @throws Exception
+	 */
 	@Test
-	public void testAddUser()
+	public void testAddUser() throws Exception
 	{
 		assertEquals(943,movieRec.getUsers().size());
 		User testUser = new User(944,"TestUser", "TestUserLast", 19, 'M', "None");
@@ -86,8 +105,12 @@ public class MovieRecommenderTest {
 		assertEquals(945,movieRec.getUsers().size());
 	}
 	
+	/**
+	 * Testing removing a user
+	 * @throws Exception
+	 */
 	@Test
-	public void testRemoveUser()
+	public void testRemoveUser() throws Exception
 	{
 		assertEquals(943,movieRec.getUsers().size());
 		movieRec.addUser("TestUser", "TestUserLast", 19, 'M', "None");
@@ -96,8 +119,12 @@ public class MovieRecommenderTest {
 		assertEquals(943,movieRec.getUsers().size());
 	}
 	
+	/**
+	 * Testing adding a movie
+	 * @throws Exception
+	 */
 	@Test
-	public void testAddMovie()
+	public void testAddMovie() throws Exception
 	{
 		assertEquals(1679,movieRec.getMovies().size());
 		Item testItem1 = new Item(1678,"Test","2016","www.test.com",new ArrayList<String>());
@@ -112,8 +139,12 @@ public class MovieRecommenderTest {
 		assertEquals(testItem2,movieRec.getMovie(1681));
 	}
 	
+	/**
+	 * Testing adding ratings 
+	 * @throws Exception
+	 */
 	@Test
-	public void testRating()
+	public void testRating() throws Exception
 	{
 		movieRec.addUser("TestUser", "TestUserLast", 19, 'M', "None");
 		movieRec.addRating(944, 1, 3);
@@ -146,8 +177,12 @@ public class MovieRecommenderTest {
 		}
 	}
 	
+	/**
+	 * Testing getting user recommendations
+	 * @throws Exception
+	 */
 	@Test
-	public void testGetUserRecommendations()
+	public void testGetUserRecommendations() throws Exception
 	{
 		Random rn = new Random();
 		movieRec.addUser("Test", "Test", 19, 'M', "None");
@@ -164,8 +199,12 @@ public class MovieRecommenderTest {
 		}
 	}
 	
+	/**
+	 * Testing getting user specific top ten movies
+	 * @throws Exception
+	 */
 	@Test
-	public void testUserTopTenMovies()
+	public void testUserTopTenMovies() throws Exception
 	{
 		movieRec.addUser("Test", "Test", 19, 'M', "None");
 		for(int i=1; i<movieRec.getMovies().size();i++)
@@ -188,6 +227,9 @@ public class MovieRecommenderTest {
 		assertEquals(true,movieRec.userTopTenMovies(944).contains(movieRec.getMovie(100)));
 	}
 	
+	/**
+	 * Testing getting top ten movies
+	 */
 	@Test
 	public void testGetTopTenMovies()
 	{
@@ -203,6 +245,10 @@ public class MovieRecommenderTest {
 		}
 	}
 	
+	/**
+	 * Testing the write and read methods
+	 * @throws Exception
+	 */
 	@Test
 	public void testWriteRead() throws Exception
 	{
